@@ -39,21 +39,19 @@ CHOICE /C YN /N /M "Make new user an Administrator? (Y/N): "
 REM THIS DIRECTORY IS IMPORTANT, autoupdate.bat requires it according to: https://github.com/asmtron/rdpwrap/blob/master/binary-download.md
 MKDIR "%PROGRAMFILES%\RDP Wrapper"
 
-ECHO. & ECHO Downloading and installing RDPWrap & ECHO.
+ECHO. & ECHO Downloading required files... & ECHO.
 CURL -L --progress-bar "https://github.com/stascorp/rdpwrap/releases/download/v1.6.2/RDPWrap-v1.6.2.zip" --output "%PROGRAMFILES%\RDP Wrapper\RDPWrap.zip">NUL & ECHO.
 	FOR %%A IN ("%PROGRAMFILES%\RDP Wrapper\RDPWrap.zip") DO SET "ZipSize=%%~zA"
 		REM Detects size of ZIP file, this essentially allows for a simple error detection.
-		IF %ZipSize% LSS 20000 (
-			RMDIR /S /Q "%PROGRAMFILES%\RDP Wrapper"
-			SET "ERRORCODE=DL1" & GOTO REMOVE )
-
+		IF %ZipSize% LSS 20000 SET "ERRORCODE=DL1" & GOTO REMOVE
 REM THIS IS NEEDED, RDPWrap by itself is outdated, autoupdate is maintained by another user and it allows
 REM for newer versions of Windows
 CURL -L --progress-bar "https://github.com/asmtron/rdpwrap/raw/master/autoupdate.zip" --output "%PROGRAMFILES%\RDP Wrapper\RDPWrapUpdate.zip">NUL & ECHO.
 	FOR %%A IN ("%PROGRAMFILES%\RDP Wrapper\RDPWrapUpdate.zip") DO SET "ZipSize=%%~zA"
-		IF %ZipSize% LSS 4000 (
-			RMDIR /S /Q "%PROGRAMFILES%\RDP Wrapper"
-			SET "ERRORCODE=DL2" & GOTO REMOVE )
+		IF %ZipSize% LSS 4000 SET "ERRORCODE=DL2" & GOTO REMOVE
+CURL -L --progress-bar "https://ci.freerdp.com/job/freerdp-nightly-windows/arch=win64,label=vs2013/lastStableBuild/artifact/build/Release/wfreerdp.exe" --output "%PROGRAMFILES%\RDP Wrapper\wfreerdp.exe" & ECHO.
+	FOR %%A IN ("%PROGRAMFILES%\RDP Wrapper\wfreerdp.exe") DO SET "EXESize=%%~zA"
+		IF %EXESize% LSS 3000 SET "ERRORCODE=DL3" & GOTO REMOVE
 REM Extract everything to %PROGRAMFILES%\RDP Wrapper
 POWERSHELL -command "Expand-Archive -Path '%PROGRAMFILES%\RDP Wrapper\RDPWrap.zip' -DestinationPath '%PROGRAMFILES%\RDP Wrapper';Expand-Archive -Path '%PROGRAMFILES%\RDP Wrapper\RDPWrapUpdate.zip' -DestinationPath '%PROGRAMFILES%\RDP Wrapper'"
 
@@ -70,12 +68,7 @@ NET localgroup Administrators "%newUsername%" /add
 
 :UserLogin
 
-ECHO Downloading wFreeRDP... & ECHO.
-CURL -L --progress-bar "https://ci.freerdp.com/job/freerdp-nightly-windows/arch=win64,label=vs2013/lastStableBuild/artifact/build/Release/wfreerdp.exe" --output "%PROGRAMFILES%\RDP Wrapper\wfreerdp.exe" & ECHO.
-	FOR %%A IN ("%PROGRAMFILES%\RDP Wrapper\wfreerdp.exe") DO SET "EXESize=%%~zA"
-		IF %EXESize% LSS 3000 (
-		SET "ERRORCODE=DL3"
-		GOTO REMOVE )
+
 
 ECHO Disabling privacy menu via registry... & ECHO.
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\OOBE" /v DisablePrivacyExperience /t REG_DWORD /d 1 /f & ECHO.
