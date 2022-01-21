@@ -2,7 +2,7 @@
 
 Script for creating a new user and logging in to it using RDP
 
-![User-Creation-Script Screenshot](READMEimg.png)
+![User-Creation-Script Screenshot](User-Creation-Script\READMEimg.png)
 
 ## Why it's needed
 
