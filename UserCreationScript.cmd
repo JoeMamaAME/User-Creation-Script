@@ -68,8 +68,6 @@ NET localgroup Administrators "%newUsername%" /add
 
 :UserLogin
 
-
-
 ECHO Disabling privacy menu via registry... & ECHO.
 REG ADD "HKEY_LOCAL_MACHINE\SOFTWARE\Policies\Microsoft\Windows\OOBE" /v DisablePrivacyExperience /t REG_DWORD /d 1 /f & ECHO.
 
