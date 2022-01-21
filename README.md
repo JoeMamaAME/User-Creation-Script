@@ -1,10 +1,8 @@
 # User-Creation-Script
 
 Script for creating a new user and logging in to it using RDP
-
 ![User-Creation-Script Screenshot](READMEimg.PNG)
-
-## Why it's needed
+## Why it's needed:
 
 Simply using "net user \<name\> /add" or adding a user via settings will NOT fully create the user. Logging into the created user is necessary to complete the process.
 
