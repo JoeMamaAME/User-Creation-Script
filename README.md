@@ -10,9 +10,11 @@ Simply using "net user \<name\> /add" or adding a new user via settings will NOT
 
 ## How it works:
 
+Initially the script asks the user for the desired username and password for the new account, and then downloads and extracts everything required for the process to %PROGRAMFILES%\RDP Wrapper.
+
 ### User Creation and RDP Setup
 
-Once the user enters their desired username and password for the new account, the script creates the user using "net user \<name\> /add". The Remote Desktop Protocol (RDP) is used for logging in.
+Once everything has been downloaded, the script creates the user using "net user \<name\> /add". The Remote Desktop Protocol (RDP) is used for logging in.
 
 Since Windows 10 has many artificial limitations on using RDP, RDPWrap is used in its place. This allows for RDP to work on any Windows 10 version, with no hindering limitations.
 
