@@ -10,7 +10,7 @@ Simply using "net user \<name\> /add" or adding a new user via settings will NOT
 
 ## How it works:
 
-### User creation and RDP setup
+### User Creation and RDP Setup
 
 Once the user enters their desired username and password for the new account, the script creates the user using "net user \<name\> /add". The Remote Desktop Protocol (RDP) is used for logging in.
 
@@ -24,7 +24,7 @@ After the registry change is made, wFreeRDP is used to login. This program allow
 
 Ideally the wFreeRDP taskbar icon should be hidden, but it seemed to be impossible to start it as Hidden (Using PowerShell's Start-Process -WindowStyle Hidden did not work). So, instead, once the script detects the wFreeRDP window is open, it hides it.
 
-### User logoff and exit wFreeRDP
+### User Logoff and Exit wFreeRDP
 
 Once wFreeRDP is hidden, the script then waits for the user to be fully logged in. It does this by checking the Windows event logs for ID "1003" (or "1073742827" when queried by PowerShell's Get-EventLog). This event happens at the end of the user login. Once it detects the event, it runs the scheduled task mentioned before. This task runs the command "CMD /c 'shutdown -l -f'" under the currently logged in new user. At this point "TASKKILL /F /FI "ImageName eq wfreerdp.exe" is also run.
 
